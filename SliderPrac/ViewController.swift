@@ -16,7 +16,61 @@ final class ViewController: UIViewController {
     let greenLabel = UILabel()
     let greenSlider = UISlider()
     let colorFrame = UIView()
-
+    
+    lazy var redStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 30
+        stack.alignment = .fill
+        stack.distribution = .fill
+        [redLabel,
+         redSlider].forEach {
+            stack.addArrangedSubview($0)
+        }
+        return stack
+    }()
+    
+    lazy var blueStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 30
+        stack.alignment = .fill
+        stack.distribution = .fill
+        [blueLabel,
+         blueSlider].forEach {
+            stack.addArrangedSubview($0)
+        }
+        return stack
+    }()
+    
+    lazy var greenStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = 30
+        stack.alignment = .fill
+        stack.distribution = .fill
+        [greenLabel,
+         greenSlider].forEach {
+            stack.addArrangedSubview($0)
+        }
+        return stack
+    }()
+    
+    lazy var sliderStackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 60
+        stack.alignment = .fill
+        stack.distribution = .fill
+        [colorFrame,
+         redStackView,
+         blueStackView,
+         greenStackView].forEach {
+            stack.addArrangedSubview($0)
+        }
+        return stack
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupViews()
@@ -24,17 +78,10 @@ final class ViewController: UIViewController {
     }
     
     private func setupViews() {
-        view.addSubview(colorFrame)
-        view.addSubview(redLabel)
-        view.addSubview(redSlider)
-        view.addSubview(greenLabel)
-        view.addSubview(greenSlider)
-        view.addSubview(blueLabel)
-        view.addSubview(blueSlider)
+        view.addSubview(sliderStackView)
         view.backgroundColor = .black
         colorFrame.backgroundColor = .black
         colorFrame.layer.cornerRadius = 10
-        
         setupLabel(redLabel, with: redSlider.value)
         setupLabel(greenLabel, with: greenSlider.value)
         setupLabel(blueLabel, with: blueSlider.value)
@@ -44,55 +91,13 @@ final class ViewController: UIViewController {
     }
     
     private func setupLayout() {
-        colorFrame.translatesAutoresizingMaskIntoConstraints = false
-        redLabel.translatesAutoresizingMaskIntoConstraints = false
-        redSlider.translatesAutoresizingMaskIntoConstraints = false
-        greenLabel.translatesAutoresizingMaskIntoConstraints = false
-        greenSlider.translatesAutoresizingMaskIntoConstraints = false
-        blueLabel.translatesAutoresizingMaskIntoConstraints = false
-        blueSlider.translatesAutoresizingMaskIntoConstraints = false
-        
+        sliderStackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            colorFrame.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            colorFrame.topAnchor.constraint(equalTo: view.topAnchor, constant: 50),
-            colorFrame.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            colorFrame.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            colorFrame.heightAnchor.constraint(equalToConstant: 300)
+            sliderStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            sliderStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80),
+            sliderStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
+            sliderStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
         ])
-        
-        NSLayoutConstraint.activate([
-            redLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            redLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            redLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            redLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
-        ])
-        
-        NSLayoutConstraint.activate([
-            redSlider.topAnchor.constraint(equalTo: redLabel.bottomAnchor, constant: 50),
-            redSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            redSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)])
-        
-        NSLayoutConstraint.activate([
-            greenLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            greenLabel.topAnchor.constraint(equalTo: redSlider.bottomAnchor, constant: 50),
-            greenLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            greenLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
-        ])
-        NSLayoutConstraint.activate([
-            greenSlider.topAnchor.constraint(equalTo: greenLabel.bottomAnchor, constant: 50),
-            greenSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            greenSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)])
-        
-        NSLayoutConstraint.activate([
-            blueLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            blueLabel.topAnchor.constraint(equalTo: greenSlider.bottomAnchor, constant: 50),
-            blueLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            blueLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)
-        ])
-        NSLayoutConstraint.activate([
-            blueSlider.topAnchor.constraint(equalTo: blueLabel.bottomAnchor, constant: 50),
-            blueSlider.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-            blueSlider.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50)])
     }
     
     private func colorToString(value: Float) -> String {
@@ -112,7 +117,6 @@ final class ViewController: UIViewController {
     
     @objc private func sliderChanged(_ sender: UISlider) {
         let value = colorToString(value: sender.value)
-        
         switch sender {
         case redSlider:
             redLabel.text = value
@@ -134,5 +138,3 @@ final class ViewController: UIViewController {
             alpha: 1)
     }
 }
-
-
