@@ -17,43 +17,18 @@ final class ViewController: UIViewController {
     let greenSlider = UISlider()
     let colorFrame = UIView()
     
+    let sliderSpacing = 30.0
+    
     lazy var redStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 30
-        stack.alignment = .fill
-        stack.distribution = .fill
-        [redLabel,
-         redSlider].forEach {
-            stack.addArrangedSubview($0)
-        }
-        return stack
+        createHorizontalStackView(label: redLabel, slider: redSlider)
     }()
     
     lazy var blueStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 30
-        stack.alignment = .fill
-        stack.distribution = .fill
-        [blueLabel,
-         blueSlider].forEach {
-            stack.addArrangedSubview($0)
-        }
-        return stack
+        createHorizontalStackView(label: blueLabel, slider: blueSlider)
     }()
     
     lazy var greenStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.spacing = 30
-        stack.alignment = .fill
-        stack.distribution = .fill
-        [greenLabel,
-         greenSlider].forEach {
-            stack.addArrangedSubview($0)
-        }
-        return stack
+        createHorizontalStackView(label: greenLabel, slider: greenSlider)
     }()
     
     lazy var sliderStackView: UIStackView = {
@@ -77,6 +52,19 @@ final class ViewController: UIViewController {
         setupLayout()
     }
     
+    private func createHorizontalStackView(label: UILabel, slider: UISlider) -> UIStackView {
+        let stack = UIStackView()
+        stack.axis = .horizontal
+        stack.spacing = sliderSpacing
+        stack.alignment = .fill
+        stack.distribution = .fill
+        [label,
+         slider].forEach {
+            stack.addArrangedSubview($0)
+        }
+        return stack
+    }
+    
     private func setupViews() {
         view.addSubview(sliderStackView)
         view.backgroundColor = .black
@@ -96,8 +84,7 @@ final class ViewController: UIViewController {
             sliderStackView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             sliderStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -80),
             sliderStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -50),
-            sliderStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50),
-        ])
+            sliderStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 50)])
     }
     
     private func colorToString(value: Float) -> String {
